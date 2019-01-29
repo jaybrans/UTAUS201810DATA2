@@ -1,0 +1,89 @@
+body {
+    background: white;
+  }
+  /* every box is this size */
+  
+  h1 {
+    font-size: 60px;
+    color: blue;
+  }
+  h2 {
+    font-size: 30px;
+    color: darkblue
+  }
+  .navbar {
+    margin-right: 0px;
+    margin-left: 0px;
+    padding: 25px;
+    background: rgb(37, 42, 48);
+  }
+  
+  b {
+      font-size: 20px;
+      font-weight: bold;
+  }
+
+  .navbar li {
+    display: d-block;
+    padding: 10px;
+    margin-right: 0px;
+    margin-left: 0px;
+    cursor: pointer;
+  }
+
+  .box{
+    padding: 15px;
+    background: white;
+    margin-top:50px;
+    margin-left:5px;
+    margin-right:5px;
+    margin-bottom:20px;
+    align-content: center;
+  }
+  
+
+
+  
+  
+  p{
+      font-size: 22px;
+  }
+  
+  
+  .c-d{color:white;
+    font-size: 28px;
+  }
+  
+  .latitude {
+    color: white;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 40px;
+    background-color: rgb(34, 142, 214);
+    border: 1px solid rgb(27, 135, 207);
+      padding: 15px;
+  }
+
+
+  @media (max-width: 240px) {
+    .navbar li {
+      padding: 8px;
+    }
+    .box {
+      margin-right: 15px;
+      margin-left: 15px;
+    }
+    .navbar ul {
+      visibility: hidden;
+    }
+    #nav-select {
+      visibility: visible;
+    }
+  }
+  
+
+  
+  @media only screen and (max-width: 800px) {
+      [class*="col-"] {
+          width: 100%;
+      }
+  }
