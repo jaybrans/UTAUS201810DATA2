@@ -2,12 +2,23 @@
 var tableData = data
 
 var tbody = document.getElementById("databody")
-var search = document.getElementById("filter-btn")
-var dateinput = document.getElementById("datetime")
-console.log(tableData.length)
+var submit = d3.select("#filter-btn")
+var dateInput = d3.select("#datetimetest")
+var actualDate = ""
+
+submit.on("click", handleSearch)
+
+// dateInput.on("change", function () {
+//     console.log("here")
+//     var newText = d3.event.target.value;
+//     console.log(newText);
+//     dateInput.setAttribute("value", newText)
+// });
+
 
 
 function showData() {
+    tbody.innerHTML = ""
     for (var i = 0; i < tableData.length; i++) {
         var sighting = tableData[i]
         var fields = Object.keys(sighting)
@@ -16,30 +27,33 @@ function showData() {
             var field = fields[j]
             var cell = row.insertCell(j)
             cell.innerText = sighting[field]
-            console.log(sighting[field])
         }
     }
 }
 
 function handleSearch() {
+    d3.event.preventDefault();
+    dateInput = d3.select("#datetimetest")
+    dateInputValue = dateInput.property("value")
+    console.log(dateInputValue)
+    console.log(dateInputValue.length)
 
-    var dateToFilterBy = dateinput.value.trim()
-    if (dateToFilterBy.length > 0) {
+
+    if (dateInputValue.length > 0) {
         tableData = data.filter(function (sighting) {
-            return sighting.datetime == dateToFilterBy
+            return sighting.datetime === dateInputValue
         })
         showData()
     }
-
+    console.log(tableData.length)
 
 
 }
 
-
-search.onclick = handleSearch()
-
-
 showData()
+
+
+
 
 
 // YOUR CODE HERE!
