@@ -3,17 +3,27 @@ from flask import Flask, render_template, jsonify, redirect
 import pymongo
 from bson.json_util import dumps
 from flask import request
-app = Flask(__name__)
+from flask_cors import CORS, cross_origin
 
+app = Flask(__name__)
+app.config['CORS_HEADERS'] = 'Content-Type'
 client = pymongo.MongoClient("localhost", 27017)
 db = client.blackFriday
 collection = db.blackFridayPurchases
 
 
-@app.route('/blackfridaypurchases/')
-def home():
-    limit = request.args.get('limit', default=100, type=int)
-    black_friday_purchases = list(collection.find().limit(limit))
+@app.route('/blackfridaypurchases/groupby')
+@cross_origin()
+def age():
+    #   results = collection.aggregate([
+    #     {"$group": {"_id": {"age", "$Age"}, "count": {"$sum": 1}}}
+    # ])
+    choice = request.args.get('choice', default="Age")
+
+    black_friday_purchases = list(collection.aggregate([
+        {"$group": {"_id": "$"+choice+"", "count": {"$sum": 1}}}
+    ]))
+
     return dumps(black_friday_purchases)
 
 

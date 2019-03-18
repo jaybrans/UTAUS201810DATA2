@@ -20,12 +20,12 @@ svg.append("g").attr("class", "yGroup")
 
 var yGroup = d3.select(".yGroup")
 
-xGroup.append("text").attr("y", -26).attr("data-name", "poverty").attr("data-axis", "x").attr("class", "aText active x").text("In Poverty (%)")
-xGroup.append("text").attr("y", 0).attr("data-name", "age").attr("data-axis", "x").attr("class", "aText inactive x").text("Age (Median)")
-xGroup.append("text").attr("y", 26).attr("data-name", "income").attr("data-axis", "x").attr("class", "aText inactive  x").text("Household Income (Median)")
-yGroup.append("text").attr("y", -26).attr("data-name", "obesity").attr("data-axis", "y").attr("class", "aText active y").text("Obese (%)")
-yGroup.append("text").attr("x", 0).attr("data-name", "smokes").attr("data-axis", "y").attr("class", "aText inactive y").text("Smokes (%)")
-yGroup.append("text").attr("y", 26).attr("data-name", "healthcare").attr("data-axis", "y").attr("class", "aText inactive y").text("Lacks Healthcare (%)")
+xGroup.append("text").attr("y", -26).attr("data-name", "Age").attr("data-axis", "x").attr("class", "aText active x").text("Age (%)")
+// xGroup.append("text").attr("y", 0).attr("data-name", "age").attr("data-axis", "x").attr("class", "aText inactive x").text("Age (Median)")
+// xGroup.append("text").attr("y", 26).attr("data-name", "income").attr("data-axis", "x").attr("class", "aText inactive  x").text("Household Income (Median)")
+yGroup.append("text").attr("y", -26).attr("data-name", "Purchase").attr("data-axis", "y").attr("class", "aText active y").text("Purchase (%)")
+// yGroup.append("text").attr("x", 0).attr("data-name", "smokes").attr("data-axis", "y").attr("class", "aText inactive y").text("Smokes (%)")
+// yGroup.append("text").attr("y", 26).attr("data-name", "healthcare").attr("data-axis", "y").attr("class", "aText inactive y").text("Lacks Healthcare (%)")
 
 var leftTextX = margin + tPadLeft;
 var leftTextY = (height + labelArea) / 2 - labelArea;
@@ -40,8 +40,8 @@ function refresh() {
 refresh()
 
 function display(data) {
-    var currentX = "poverty";
-    var currentY = "obesity";
+    var currentX = "Age";
+    var currentY = "Purchase";
 
     var minX, maxX, minY, maxY;
     var tip =
@@ -53,11 +53,11 @@ function display(data) {
             var keyX = "";
             var currentState = "<div>" + d.state + " </div>";
             var keyY = "<div>" + currentY + d[currentY] + " </div>";
-            if (currentX === "poverty") {
-                keyX = "<div>" + currentX + ": " + d[currentX] + "%</div>";
-            } else {
-                keyX = "<div>" + currentX + ": " + parseFloat(d[currentX]) + "</div>";
-            }
+            //if (currentX === "Purchase") {
+            keyX = "<div>" + currentX + ": " + d[currentX] + "%</div>";
+            // } else {
+            //     keyX = "<div>" + currentX + ": " + parseFloat(d[currentX]) + "</div>";
+            // }
             return currentState + keyX + keyY
         });
 
@@ -102,8 +102,11 @@ function display(data) {
     svg.append("g").call(yAxis).attr("class", "yAxis").attr("transform", "translate(" + (margin + labelArea) + ", 0)");
 
     var theCircles = svg.selectAll("g theCircles").data(data).enter()
+    console.log(data)
     theCircles.append("circle")
         .attr("cx", function (d) {
+            console.log(d)
+            console.log(currentX)
             return xScale([d[currentX]])
         })
         .attr("cy", function (d) {
@@ -184,7 +187,8 @@ function display(data) {
 }
 
 //Import our data!
-d3.csv("assets/data/data.csv").then(function (data) {
+d3.csv("assets/data/BlackFriday.csv").then(function (data) {
+    data = data.slice(0, 1000)
     console.log(data)
     display(data);
 })

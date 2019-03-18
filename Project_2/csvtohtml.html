@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        table {
+                border-collapse: collapse;
+                border: 2px black solid;
+                font: 12px sans-serif;
+            }
+
+            td {
+                border: 1px black solid;
+                padding: 5px;
+            }
+        </style>
+    <script src="http://code.jquery.com/jquery-3.1.1.js"></script>
+</head>
+
+<body>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <div id="nav-placeholder">
+    </div>
+    <script>
+        $(function () {
+            $("#nav-placeholder").load("./nav.html");
+        });
+    </script>
+    <script type="text/javascript" charset="utf-8">
+        d3.text("./black-friday/BlackFriday.csv", function (data) {
+            data = data.slice(0, 10010)
+            var parsedCSV = d3.csv.parseRows(data);
+            var container = d3.select("body")
+                .append("table")
+                .selectAll("tr")
+                .data(parsedCSV).enter()
+                .append("tr")
+                .selectAll("td")
+                .data(function (d) {
+                    return d;
+                }).enter()
+                .append("td")
+                .text(function (d) {
+                    return d;
+                });
+        });
+    </script>
+</body>
+
+</html>
