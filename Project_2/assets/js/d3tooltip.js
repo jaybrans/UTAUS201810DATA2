@@ -1,17 +1,17 @@
-var width = parseInt(d3.select("#scatter").style("width"));
+var width = 1000
 
-var height = width - width / 4;
+var height = 700;
 
 var margin = 20;
 
-var labelArea = 100;
+var labelArea = 110;
 
-var tPadBottom = 40;
+var tPadBottom = 20;
 var tPadLeft = 40;
 
 
 var svg = d3.select("#scatter").append("svg").attr("width", width).attr("height", height).attr("class", "chart");
-var circleRadius = 10;
+var circleRadius = 3;
 
 svg.append("g").attr("class", "xGroup")
 
@@ -20,12 +20,10 @@ svg.append("g").attr("class", "yGroup")
 
 var yGroup = d3.select(".yGroup")
 
-xGroup.append("text").attr("y", -26).attr("data-name", "Age").attr("data-axis", "x").attr("class", "aText active x").text("Age (%)")
-// xGroup.append("text").attr("y", 0).attr("data-name", "age").attr("data-axis", "x").attr("class", "aText inactive x").text("Age (Median)")
-// xGroup.append("text").attr("y", 26).attr("data-name", "income").attr("data-axis", "x").attr("class", "aText inactive  x").text("Household Income (Median)")
-yGroup.append("text").attr("y", -26).attr("data-name", "Purchase").attr("data-axis", "y").attr("class", "aText active y").text("Purchase (%)")
-// yGroup.append("text").attr("x", 0).attr("data-name", "smokes").attr("data-axis", "y").attr("class", "aText inactive y").text("Smokes (%)")
-// yGroup.append("text").attr("y", 26).attr("data-name", "healthcare").attr("data-axis", "y").attr("class", "aText inactive y").text("Lacks Healthcare (%)")
+xGroup.append("text").attr("y", -26).attr("data-name", "User_ID").attr("data-axis", "x").attr("class", "aText active x").text("User_ID (%)")
+yGroup.append("text").attr("x", 0).attr("data-name", "Product_Category_1").attr("data-axis", "y").attr("class", "aText inactive y").text("Product_Category_1 (Median)")
+yGroup.append("text").attr("y", -26).attr("data-name", "Occupation").attr("data-axis", "y").attr("class", "aText inactive y").text("Occupation (%)")
+yGroup.append("text").attr("y", 26).attr("data-name", "Purchase").attr("data-axis", "y").attr("class", "aText inactive y").text("Purchase (%)")
 
 var leftTextX = margin + tPadLeft;
 var leftTextY = (height + labelArea) / 2 - labelArea;
@@ -40,7 +38,7 @@ function refresh() {
 refresh()
 
 function display(data) {
-    var currentX = "Age";
+    var currentX = "User_ID";
     var currentY = "Purchase";
 
     var minX, maxX, minY, maxY;
@@ -51,14 +49,18 @@ function display(data) {
         .offset([40, -60])
         .html(function (d) {
             var keyX = "";
-            var currentState = "<div>" + d.state + " </div>";
-            var keyY = "<div>" + currentY + d[currentY] + " </div>";
+            var currentState = "<div>Metadata </div>";
+            var keyY = "<div>" + currentY + ": " + d[currentY] + " </div>";
             //if (currentX === "Purchase") {
-            keyX = "<div>" + currentX + ": " + d[currentX] + "%</div>";
+            keyX = "<div>" + currentX + ": " + d[currentX] + "</div>";
             // } else {
             //     keyX = "<div>" + currentX + ": " + parseFloat(d[currentX]) + "</div>";
             // }
-            return currentState + keyX + keyY
+            var gender = "<div> Gender : " + d.Gender + "</div>"
+            var age = "<div> Age : " + d.Age + "</div>"
+            var marital = "<div> Marital Status : " + d.Marital_Status + "</div>"
+            var productId = "<div> Product : " + d.Product_ID + "</div>"
+            return currentState + keyX + keyY + gender + age + marital
         });
 
     svg.call(tip)
@@ -102,11 +104,10 @@ function display(data) {
     svg.append("g").call(yAxis).attr("class", "yAxis").attr("transform", "translate(" + (margin + labelArea) + ", 0)");
 
     var theCircles = svg.selectAll("g theCircles").data(data).enter()
-    console.log(data)
+    console.log(theCircles)
+
     theCircles.append("circle")
         .attr("cx", function (d) {
-            console.log(d)
-            console.log(currentX)
             return xScale([d[currentX]])
         })
         .attr("cy", function (d) {
@@ -118,12 +119,22 @@ function display(data) {
         })
         .on("mouseover", function (d) {
             tip.show(d, this)
-            d3.select(this).style("stroke", "#323232")
+            //d3.select(this).style("stroke", "#323232")
         })
         .on("mouseout", function (d) {
             tip.hide(d)
-            d3.select(this).style("stroke", "#e3e3e3")
+            //d3.select(this).style("stroke", "#e3e3e3")
         })
+        .on("click", function (d) {
+            console.log(d)
+            var data2 = theCircles.selectAll('circle')
+            console.log(theCircles)
+            console.log(data2)
+            data2.style("stroke ", "#e3e3e3")
+            console.log(circles)
+
+        })
+
     theCircles.append("text").text(function (d) {
             return d.abbr
         })
@@ -187,7 +198,7 @@ function display(data) {
 }
 
 //Import our data!
-d3.csv("assets/data/BlackFriday.csv").then(function (data) {
+d3.csv("../../black-friday/BlackFriday.csv").then(function (data) {
     data = data.slice(0, 1000)
     console.log(data)
     display(data);
