@@ -20,10 +20,10 @@ svg.append("g").attr("class", "yGroup")
 
 var yGroup = d3.select(".yGroup")
 
-xGroup.append("text").attr("y", -26).attr("data-name", "User_ID").attr("data-axis", "x").attr("class", "aText active x").text("User_ID (%)")
-yGroup.append("text").attr("x", 0).attr("data-name", "Product_Category_1").attr("data-axis", "y").attr("class", "aText inactive y").text("Product_Category_1 (Median)")
-yGroup.append("text").attr("y", -26).attr("data-name", "Occupation").attr("data-axis", "y").attr("class", "aText inactive y").text("Occupation (%)")
-yGroup.append("text").attr("y", 26).attr("data-name", "Purchase").attr("data-axis", "y").attr("class", "aText inactive y").text("Purchase (%)")
+xGroup.append("text").attr("y", -26).attr("data-name", "User_ID").attr("data-axis", "x").attr("class", "aText active x").text("User_ID")
+yGroup.append("text").attr("x", 0).attr("data-name", "Product_Category_1").attr("data-axis", "y").attr("class", "aText inactive y").text("Product_Category_1")
+yGroup.append("text").attr("y", -26).attr("data-name", "Occupation").attr("data-axis", "y").attr("class", "aText inactive y").text("Occupation")
+yGroup.append("text").attr("y", 26).attr("data-name", "Purchase").attr("data-axis", "y").attr("class", "aText inactive y").text("Purchase")
 
 var leftTextX = margin + tPadLeft;
 var leftTextY = (height + labelArea) / 2 - labelArea;
@@ -198,8 +198,7 @@ function display(data) {
 }
 
 //Import our data!
-d3.csv("../../black-friday/BlackFriday.csv").then(function (data) {
-    data = data.slice(0, 1000)
+d3.json("http://localhost:5000/blackfridaypurchases/").then(function (data) {
     console.log(data)
     display(data);
 })
