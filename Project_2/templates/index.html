@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Black Friday Purchases</title>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="http://code.jquery.com/jquery-3.1.1.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+    integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous">
+  </script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <!-- <link rel="stylesheet" href="assets/css/d3Style.css"> -->
+  <script src="https://d3js.org/d3.v3.js"></script>
+</head>
+
+<body>
+  <div id="nav-placeholder">
+  </div>
+
+  <script>
+    $(function () {
+      $("#nav-placeholder").load("{{ url_for('nav') }}");
+    });
+  </script>
+  <div class="container">
+    <div class="jumbotron">
+      <h1 align="center">Black Friday Purchases</h1>
+
+    </div>
+  </div>
+  <h1 align="center">Purchases vs Age</h1>
+  <div id="chart"></div>
+  <div id="popup" align="center"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='app.js') }}"></script>
+  <div class="container">
+  </div>
+  <h1 align="center">Purchases vs Gender</h1>
+  <div id="chartGender"></div>
+  <div id="popupGender" align="center"></div>
+  <h1 align="center">Purchases vs Category</h1>
+  <canvas id="myChart" width="400" height="400"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+</body>
+
+</html>

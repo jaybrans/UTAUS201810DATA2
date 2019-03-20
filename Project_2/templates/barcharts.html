@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+  .bar {
+    fill: lightblue;
+  }
+
+  .bar:hover {
+    fill: pink;
+  }
+
+  .axis--x path {
+    display: none;
+  }
+
+
+  svg {
+    position: absolute;
+    margin-top: 40px;
+  }
+
+  select {
+    margin-left: 60px;
+  }
+</style>
+
+<body>
+  <div id="nav-placeholder">
+  </div>
+
+  <script>
+    $(function () {
+      $("#nav-placeholder").load("{{ url_for('nav') }}");
+    });
+  </script>
+  <h1 align="center">Multi Variable Number of Purchases vs Product Category</h1>
+  <select id="filterMarital">
+    <option value="0">Single</option>
+    <option value="1">Married</option>
+  </select>
+  <select id="filterAge">
+    <option value="0-17">0-17</option>
+    <option value="18-25">18-25</option>
+    <option value="26-35">26-35</option>
+    <option value="36-45">36-45</option>
+    <option value="46-50">46-50</option>
+    <option value="51-55">51-55</option>
+    <option value="55+">55+</option>
+  </select>
+  <select id="filterGender">
+    <option value="M">Male</option>
+    <option value="F">Female</option>
+  </select>
+  <svg width="960" height="500"></svg>
+</body>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+  var svg = d3.select("svg"),
+    margin = {
+      top: 20,
+      right: 20,
+      bottom: 30,
+      left: 40
+    },
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = +svg.attr("height") - margin.top - margin.bottom;
+
+  var x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+    y = d3.scaleLinear().rangeRound([height, 0]);
+
+  var g = svg.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  // create a variable that will hold the loaded data
+  var jsonData;
+  d3.json("http://localhost:5000/blackfridaypurchases/groupby/productcategory1?choice=Marital_Status", initialdisplay)
+
+  function fetchMaritalData() {
+    return d3.json("http://localhost:5000/blackfridaypurchases/groupby/productcategory1?choice=Marital_Status",
+      function (err, datafile) {
+        return datafile
+      })
+  }
+
+  function fetchAgeData() {
+    d3.json("http://localhost:5000/blackfridaypurchases/groupby/productcategory1?choice=Age", function (err, datafile) {
+      return datafile
+    })
+  }
+
+  function fetchGenderData() {
+    d3.json("http://localhost:5000/blackfridaypurchases/groupby/productcategory1?choice=Gender", function (err,
+      datafile) {
+      return datafile
+    })
+  }
+  d3.select("#filterMarital").on("change", function () {
+    tempValue = this.value
+    d3.json("http://localhost:5000/blackfridaypurchases/groupby/productcategory1?choice=Marital_Status", function (
+      err, datafile) {
+      applyFilter(tempValue, "marital", datafile)
+    })
+  });
+  d3.select("#filterGender").on("change", function () {
+    tempValue = this.value
+    d3.json("http://localhost:5000/blackfridaypurchases/groupby/productcategory1?choice=Gender", function (err,
+      datafile) {
+      applyFilter(tempValue, "gender", datafile)
+    })
+  });
+  d3.select("#filterAge").on("change", function () {
+    tempValue = this.value
+    d3.json("http://localhost:5000/blackfridaypurchases/groupby/productcategory1?choice=Age", function (err,
+      datafile) {
+      applyFilter(tempValue, "age", datafile)
+    })
+  });
+
+  function initialdisplay(jsonData) {
+    display(jsonData, "marital")
+  }
+
+  function display(datafile, choice) {
+    jsonData = datafile;
+
+    var data = jsonData.filter(function (d) {
+
+      var result;
+      if (choice == "marital") {
+        result = d._id.Marital_Status == d3.select("#filterMarital").property("value");
+      } else if (choice == "age") {
+        result = d._id.Age == d3.select("#filterAge").property("value");
+      } else if (choice == "gender") {
+        result = d._id.Gender == d3.select("#filterGender").property("value");
+      }
+
+      return result;
+    });
+
+
+    // set the domains of the axes
+    x.domain(data.map(function (d) {
+      console.log(d._id.Product_Category_1)
+      return d._id.Product_Category_1;
+    }));
+    y.domain([0, d3.max(data, function (d) {
+      return d.count;
+    })]);
+    // add the svg elements
+    g.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+    g.append("g")
+      .attr("class", "axis axis--y")
+      .call(d3.axisLeft(y).ticks(10))
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", "0.71em")
+      .attr("text-anchor", "end")
+      .text("Count");
+    // create the bars
+    g.selectAll(".bar")
+      .data(data)
+      .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function (d) {
+        return x(d._id.Product_Category_1);
+      })
+      .attr("y", function (d) {
+        return y(d.count);
+      })
+      .attr("width", x.bandwidth())
+      .attr("height", function (d) {
+        return height - y(d.count);
+      });
+  }
+
+  function applyFilter(value, choice, jsonData) {
+    // filter the data
+    var data = jsonData.filter(function (d) {
+      var result = false;
+      if (choice == "marital") {
+        result = d._id.Marital_Status == value
+      } else if (choice == "age") {
+        result = d._id.Age == value
+      } else if (choice == "gender") {
+        result = d._id.Gender == value
+      }
+      return result
+    })
+    d3.selectAll(".bar")
+      .data(data)
+      .transition().duration(1000)
+      .attr("x", function (d) {
+        return x(d._id.Product_Category_1);
+      })
+      .attr("y", function (d) {
+        return y(d.count);
+      })
+      .attr("height", function (d) {
+        return height - y(d.count);
+      });
+  }
+</script>
