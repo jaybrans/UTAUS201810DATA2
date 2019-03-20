@@ -72,44 +72,44 @@
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   // create a variable that will hold the loaded data
   var jsonData;
-  d3.json("http://localhost:5000/blackfridaypurchases/groupby/productcategory1?choice=Marital_Status", initialdisplay)
+  d3.json("/blackfridaypurchases/groupby/productcategory1?choice=Marital_Status", initialdisplay)
 
   function fetchMaritalData() {
-    return d3.json("http://localhost:5000/blackfridaypurchases/groupby/productcategory1?choice=Marital_Status",
+    return d3.json("/blackfridaypurchases/groupby/productcategory1?choice=Marital_Status",
       function (err, datafile) {
         return datafile
       })
   }
 
   function fetchAgeData() {
-    d3.json("http://localhost:5000/blackfridaypurchases/groupby/productcategory1?choice=Age", function (err, datafile) {
+    d3.json("/blackfridaypurchases/groupby/productcategory1?choice=Age", function (err, datafile) {
       return datafile
     })
   }
 
   function fetchGenderData() {
-    d3.json("http://localhost:5000/blackfridaypurchases/groupby/productcategory1?choice=Gender", function (err,
+    d3.json("/blackfridaypurchases/groupby/productcategory1?choice=Gender", function (err,
       datafile) {
       return datafile
     })
   }
   d3.select("#filterMarital").on("change", function () {
     tempValue = this.value
-    d3.json("http://localhost:5000/blackfridaypurchases/groupby/productcategory1?choice=Marital_Status", function (
+    d3.json("/blackfridaypurchases/groupby/productcategory1?choice=Marital_Status", function (
       err, datafile) {
       applyFilter(tempValue, "marital", datafile)
     })
   });
   d3.select("#filterGender").on("change", function () {
     tempValue = this.value
-    d3.json("http://localhost:5000/blackfridaypurchases/groupby/productcategory1?choice=Gender", function (err,
+    d3.json("/blackfridaypurchases/groupby/productcategory1?choice=Gender", function (err,
       datafile) {
       applyFilter(tempValue, "gender", datafile)
     })
   });
   d3.select("#filterAge").on("change", function () {
     tempValue = this.value
-    d3.json("http://localhost:5000/blackfridaypurchases/groupby/productcategory1?choice=Age", function (err,
+    d3.json("/blackfridaypurchases/groupby/productcategory1?choice=Age", function (err,
       datafile) {
       applyFilter(tempValue, "age", datafile)
     })

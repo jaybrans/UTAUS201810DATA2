@@ -198,7 +198,7 @@ function display(data) {
 }
 
 //Import our data!
-d3.json("http://localhost:5000/blackfridaypurchases/").then(function (data) {
+d3.json("/blackfridaypurchases/").then(function (data) {
     console.log(data)
     display(data);
 })

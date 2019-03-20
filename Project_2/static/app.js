@@ -192,6 +192,7 @@ function displayblackfridaybyage(dataDictionary) {
     //----------
 
 }
+
 function displayblackfridaybygender(dataDictionary) {
 
     var dataset = [];
@@ -447,32 +448,12 @@ function displaycategoriesvspurchase(data) {
 }
 
 //Import our data!
-d3.json("http://localhost:5000/blackfridaypurchases/groupby?choice=Age").then(function (data) {
+d3.json("/blackfridaypurchases/groupby?choice=Age").then(function (data) {
     displayblackfridaybyage(data);
 })
-d3.json("http://localhost:5000/blackfridaypurchases/groupby?choice=Gender").then(function (data) {
+d3.json("/blackfridaypurchases/groupby?choice=Gender").then(function (data) {
     displayblackfridaybygender(data);
 })
-d3.json("http://localhost:5000/blackfridaypurchases/groupby?choice=Product_Category_1").then(function (data) {
+d3.json("/blackfridaypurchases/groupby?choice=Product_Category_1").then(function (data) {
     displaycategoriesvspurchase(data);
-})
-d3.csv("black-friday/BlackFriday.csv").then(function (data) {
-    data = data.slice(0, 1000)
-    console.log(data)
-    var uniqueAges = {
-        "0-17": 50,
-        "18-25": 70,
-        "26-35": 120,
-        "26-45": 30,
-        "46-50": 20,
-        "51-55": 10,
-        "55+": 5
-    }
-    var categories = {
-        "1": 20,
-        "2": 30,
-        "3": 40
-    }
-    // displayblackfridaybyage(uniqueAges);
-    //displaycategoriesvspurchase(categories);
 })
