@@ -20,8 +20,8 @@ svg.append("g").attr("class", "yGroup")
 
 var yGroup = d3.select(".yGroup")
 
-xGroup.append("text").attr("y", -26).attr("data-name", "User_ID").attr("data-axis", "x").attr("class", "aText active x").text("User_ID")
-yGroup.append("text").attr("x", 0).attr("data-name", "Product_Category_1").attr("data-axis", "y").attr("class", "aText inactive y").text("Product_Category_1")
+xGroup.append("text").attr("y", -26).attr("data-name", "Product_Category_1").attr("data-axis", "x").attr("class", "aText active x").text("Product_Category_1")
+yGroup.append("text").attr("x", 0).attr("data-name", "Product_Category_2").attr("data-axis", "y").attr("class", "aText inactive y").text("Product_Category_2")
 yGroup.append("text").attr("y", -26).attr("data-name", "Occupation").attr("data-axis", "y").attr("class", "aText inactive y").text("Occupation")
 yGroup.append("text").attr("y", 26).attr("data-name", "Purchase").attr("data-axis", "y").attr("class", "aText inactive y").text("Purchase")
 
@@ -38,7 +38,7 @@ function refresh() {
 refresh()
 
 function display(data) {
-    var currentX = "User_ID";
+    var currentX = "Product_Category_1";
     var currentY = "Purchase";
 
     var minX, maxX, minY, maxY;

@@ -21,161 +21,141 @@ function displayblackfridaybyage(dataDictionary) {
     var radius = Math.min(width, height) / 2;
 
     // legend dimensions
-    var legendRectSize = 25; // defines the size of the colored squares in legend
-    var legendSpacing = 6; // defines spacing between squares
+    var legendRectSize = 25;
+    var legendSpacing = 6;
     console.log(dataDictionary)
-    // define color scale
+
     var color = d3.scale.ordinal()
         .domain(labels)
         .range(["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"])
 
-    // more color scales: https://bl.ocks.org/pstuffa/3393ff2711a53975040077b7453781a9
 
-    var svg = d3.select('#chart') // select element in the DOM with id 'chart'
-        .append('svg') // append an svg element to the element we've selected
-        .attr('width', width) // set the width of the svg element we just added
-        .attr('height', height) // set the height of the svg element we just added
-        .append('g') // append 'g' element to the svg element
-        .attr('transform', 'translate(' + (width / 2) + ',' + (height / 2) + ')'); // our reference is now to the 'g' element. centerting the 'g' element to the svg element
+
+    var svg = d3.select('#chart')
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .append('g')
+        .attr('transform', 'translate(' + (width / 2) + ',' + (height / 2) + ')');
 
     var arc = d3.arc()
-        .innerRadius(0) // none for pie chart
-        .outerRadius(radius); // size of overall chart
+        .innerRadius(0)
+        .outerRadius(radius);
 
-    var pie = d3.pie() // start and end angles of the segments
+    var pie = d3.pie()
         .value(function (d) {
             return d.count;
-        }) // how to extract the numerical data from each entry in our dataset
-        .sort(null); // by default, data sorts in oescending value. this will mess with our animation so we set it to null
+        })
+        .sort(null);
 
     // define tooltip
-    var tooltip = d3.select('#chart') // select element in the DOM with id 'chart'
-        .append('div') // append a div element to the element we've selected                                    
-        .attr('class', 'tooltip'); // add class 'tooltip' on the divs we just selected
+    var tooltip = d3.select('#chart')
+        .append('div')
+        .attr('class', 'tooltip');
 
-    tooltip.append('div') // add divs to the tooltip defined above                            
-        .attr('class', 'label'); // add class 'label' on the selection                         
+    tooltip.append('div')
+        .attr('class', 'label');
 
-    tooltip.append('div') // add divs to the tooltip defined above                     
-        .attr('class', 'count'); // add class 'count' on the selection                  
+    tooltip.append('div')
+        .attr('class', 'count');
 
-    tooltip.append('div') // add divs to the tooltip defined above  
-        .attr('class', 'percent'); // add class 'percent' on the selection
-
-    // Confused? see below:
-
-    // <div id="chart">
-    //   <div class="tooltip">
-    //     <div class="label">
-    //     </div>
-    //     <div class="count">
-    //     </div>
-    //     <div class="percent">
-    //     </div>
-    //   </div>
-    // </div>
+    tooltip.append('div')
+        .attr('class', 'percent');
 
     dataset.forEach(function (d) {
         console.log(d)
-        d.count = +d.count; // calculate count as we iterate through the data
-        d.enabled = true; // add enabled property to track which entries are checked
+        d.count = +d.count;
+        d.enabled = true;
     });
 
     // creating the chart
-    var path = svg.selectAll('path') // select all path elements inside the svg. specifically the 'g' element. they don't exist yet but they will be created below
-        .data(pie(dataset)) //associate dataset wit he path elements we're about to create. must pass through the pie function. it magically knows how to extract values and bakes it into the pie
-        .enter() //creates placeholder nodes for each of the values
-        .append('path') // replace placeholders with path elements
-        .attr('d', arc) // define d attribute with arc function above
+    var path = svg.selectAll('path')
+        .data(pie(dataset))
+        .enter()
+        .append('path')
+        .attr('d', arc)
         .attr('fill', function (d) {
             return color(d.data.label);
-        }) // use color scale to define fill of each label in dataset
+        })
         .each(function (d) {
             this._current - d;
-        }); // creates a smooth animation for each track
+        });
     var svg2 = d3.select('#popup')
 
 
-    // var popupText = d3.select(".popupText")
+
     console.log(svg2.text())
-    // mouse event handlers are attached to path so they need to come after its definition
-    path.on('mouseover', function (d) { // when mouse enters div      
-        tooltip.style('display', 'block'); // set display     
-        var total = d3.sum(dataset.map(function (d) { // calculate the total number of tickets in the dataset         
-            return (d.enabled) ? d.count : 0; // checking to see if the entry is enabled. if it isn't, we return 0 and cause other percentages to increase                                      
+
+    path.on('mouseover', function (d) {
+        tooltip.style('display', 'block');
+        var total = d3.sum(dataset.map(function (d) {
+            return (d.enabled) ? d.count : 0;
         }));
-        var percent = Math.round(1000 * d.data.count / total) / 10; // calculate percent
-        // popupText.style('display', 'block')
-        // console.log(popupText)
-        // popupText.text = d.data.label
+        var percent = Math.round(1000 * d.data.count / total) / 10;
         svg2.text("Age: " + d.data.label + " Count: " + d.data.count + " Percentage: " + percent + "%")
         svg2.style('display', 'block');
-        // alert(d.data.label)
-        // //d3.select(this).style("stroke", "#323232")
-        // console.log(tooltip.select('.label'))
-
-        tooltip.select('.label').html(d.data.label); // set current label           
-        tooltip.select('.count').html(d.data.count); // set current count            
-        tooltip.select('.percent').html(percent + '%'); // set percent calculated above          
-        tooltip.style('display', 'block'); // set display                     
+        tooltip.select('.label').html(d.data.label);
+        tooltip.select('.count').html(d.data.count);
+        tooltip.select('.percent').html(percent + '%');
+        tooltip.style('display', 'block');
     });
 
-    path.on('mouseout', function () { // when mouse leaves div                        
-        svg2.style('display', 'none'); // hide tooltip for that element
+    path.on('mouseout', function () {
+        svg2.style('display', 'none');
     });
 
-    path.on('mousemove', function (e, d) { // when mouse moves    
-        svg2.style('top', (d3.event.layerY + 10) + 'px') // always 10px below the cursor
-            .style('left', (d3.event.layerX + 10) + 'px'); // always 10px to the right of the mouse
+    path.on('mousemove', function (e, d) {
+        svg2.style('top', (d3.event.layerY + 10) + 'px')
+            .style('left', (d3.event.layerX + 10) + 'px');
     });
 
     // define legend
     var legend = svg.selectAll('.legend') // selecting elements with class 'legend'
-        .data(color.domain()) // refers to an array of labels from our dataset
-        .enter() // creates placeholder
-        .append('g') // replace placeholders with g elements
-        .attr('class', 'legend') // each g is given a legend class
+        .data(color.domain())
+        .enter()
+        .append('g')
+        .attr('class', 'legend')
         .attr('transform', function (d, i) {
-            var height = legendRectSize + legendSpacing; // height of element is the height of the colored square plus the spacing      
-            var offset = height * 10; // vertical offset of the entire legend = height of a single element & half the total number of elements  
-            var horz = 18 * legendRectSize; // the legend is shifted to the left to make room for the text
-            var vert = i * height - offset; // the top of the element is hifted up or down from the center using the offset defiend earlier and the index of the current element 'i'               
-            return 'translate(' + horz + ',' + vert + ')'; //return translation       
+            var height = legendRectSize + legendSpacing;
+            var offset = height * 10;
+            var horz = 18 * legendRectSize;
+            var vert = i * height - offset;
+            return 'translate(' + horz + ',' + vert + ')';
         });
 
     // adding colored squares to legend
-    legend.append('rect') // append rectangle squares to legend                                   
-        .attr('width', legendRectSize) // width of rect size is defined above                        
-        .attr('height', legendRectSize) // height of rect size is defined above                      
-        .style('fill', color) // each fill is passed a color
-        .style('stroke', color) // each stroke is passed a color
+    legend.append('rect')
+        .attr('width', legendRectSize)
+        .attr('height', legendRectSize)
+        .style('fill', color)
+        .style('stroke', color)
         .on('click', function (label) {
-            var rect = d3.select(this); // this refers to the colored squared just clicked
-            var enabled = true; // set enabled true to default
-            var totalEnabled = d3.sum(dataset.map(function (d) { // can't disable all options
-                return (d.enabled) ? 1 : 0; // return 1 for each enabled entry. and summing it up
+            var rect = d3.select(this);
+            var enabled = true;
+            var totalEnabled = d3.sum(dataset.map(function (d) {
+                return (d.enabled) ? 1 : 0;
             }));
 
-            if (rect.attr('class') === 'disabled') { // if class is disabled
-                rect.attr('class', ''); // remove class disabled
-            } else { // else
-                if (totalEnabled < 2) return; // if less than two labels are flagged, exit
-                rect.attr('class', 'disabled'); // otherwise flag the square disabled
-                enabled = false; // set enabled to false
+            if (rect.attr('class') === 'disabled') {
+                rect.attr('class', '');
+            } else {
+                if (totalEnabled < 2) return;
+                rect.attr('class', 'disabled');
+                enabled = false;
             }
 
             pie.value(function (d) {
-                if (d.label === label) d.enabled = enabled; // if entry label matches legend label
-                return (d.enabled) ? d.count : 0; // update enabled property and return count or 0 based on the entry's status
+                if (d.label === label) d.enabled = enabled;
+                return (d.enabled) ? d.count : 0;
             });
 
-            path = path.data(pie(dataset)); // update pie with new data
+            path = path.data(pie(dataset));
 
-            path.transition() // transition of redrawn pie
+            path.transition()
                 .duration(750) // 
-                .attrTween('d', function (d) { // 'd' specifies the d attribute that we'll be animating
-                    var interpolate = d3.interpolate(this._current, d); // this = current path element
-                    this._current = interpolate(0); // interpolate between current value and the new value of 'd'
+                .attrTween('d', function (d) {
+                    var interpolate = d3.interpolate(this._current, d);
+                    this._current = interpolate(0);
                     return function (t) {
                         return arc(interpolate(t));
                     };
@@ -213,156 +193,138 @@ function displayblackfridaybygender(dataDictionary) {
     var radius = Math.min(width, height) / 2;
 
     // legend dimensions
-    var legendRectSize = 25; // defines the size of the colored squares in legend
-    var legendSpacing = 6; // defines spacing between squares
+    var legendRectSize = 25;
+    var legendSpacing = 6;
     console.log(dataDictionary)
-    // define color scale
+
     var color = d3.scale.ordinal()
         .domain(labels)
         .range(["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac"])
-
-    // more color scales: https://bl.ocks.org/pstuffa/3393ff2711a53975040077b7453781a9
-
-    var svg = d3.select('#chartGender') // select element in the DOM with id 'chart'
-        .append('svg') // append an svg element to the element we've selected
-        .attr('width', width) // set the width of the svg element we just added
-        .attr('height', height) // set the height of the svg element we just added
-        .append('g') // append 'g' element to the svg element
-        .attr('transform', 'translate(' + (width / 2) + ',' + (height / 2) + ')'); // our reference is now to the 'g' element. centerting the 'g' element to the svg element
+    var svg = d3.select('#chartGender')
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .append('g')
+        .attr('transform', 'translate(' + (width / 2) + ',' + (height / 2) + ')');
 
     var arc = d3.arc()
-        .innerRadius(0) // none for pie chart
-        .outerRadius(radius); // size of overall chart
+        .innerRadius(0)
+        .outerRadius(radius);
 
-    var pie = d3.pie() // start and end angles of the segments
+    var pie = d3.pie()
         .value(function (d) {
             return d.count;
-        }) // how to extract the numerical data from each entry in our dataset
-        .sort(null); // by default, data sorts in oescending value. this will mess with our animation so we set it to null
+        })
+        .sort(null);
 
     // define tooltip
-    var tooltip = d3.select('#chartGender') // select element in the DOM with id 'chart'
-        .append('div') // append a div element to the element we've selected                                    
-        .attr('class', 'tooltip'); // add class 'tooltip' on the divs we just selected
+    var tooltip = d3.select('#chartGender')
+        .append('div')
+        .attr('class', 'tooltip');
 
-    tooltip.append('div') // add divs to the tooltip defined above                            
-        .attr('class', 'label'); // add class 'label' on the selection                         
+    tooltip.append('div')
+        .attr('class', 'label');
 
-    tooltip.append('div') // add divs to the tooltip defined above                     
-        .attr('class', 'count'); // add class 'count' on the selection                  
+    tooltip.append('div')
+        .attr('class', 'count');
 
-    tooltip.append('div') // add divs to the tooltip defined above  
-        .attr('class', 'percent'); // add class 'percent' on the selection
+    tooltip.append('div')
+        .attr('class', 'percent');
 
-    // Confused? see below:
-
-    // <div id="chart">
-    //   <div class="tooltip">
-    //     <div class="label">
-    //     </div>
-    //     <div class="count">
-    //     </div>
-    //     <div class="percent">
-    //     </div>
-    //   </div>
-    // </div>
 
     dataset.forEach(function (d) {
         console.log(d)
-        d.count = +d.count; // calculate count as we iterate through the data
-        d.enabled = true; // add enabled property to track which entries are checked
+        d.count = +d.count;
+        d.enabled = true;
     });
 
     // creating the chart
-    var path = svg.selectAll('path') // select all path elements inside the svg. specifically the 'g' element. they don't exist yet but they will be created below
-        .data(pie(dataset)) //associate dataset wit he path elements we're about to create. must pass through the pie function. it magically knows how to extract values and bakes it into the pie
-        .enter() //creates placeholder nodes for each of the values
-        .append('path') // replace placeholders with path elements
-        .attr('d', arc) // define d attribute with arc function above
+    var path = svg.selectAll('path')
+        .data(pie(dataset))
+        .enter()
+        .append('path')
+        .attr('d', arc)
         .attr('fill', function (d) {
             return color(d.data.label);
-        }) // use color scale to define fill of each label in dataset
+        })
         .each(function (d) {
             this._current - d;
-        }); // creates a smooth animation for each track
+        });
     var svg2 = d3.select('#popupGender')
 
-    // var popupText = d3.select(".popupText")
+
     console.log(svg2.text())
-    // mouse event handlers are attached to path so they need to come after its definition
-    path.on('mouseover', function (d) { // when mouse enters div      
-        tooltip.style('display', 'block'); // set display     
-        var total = d3.sum(dataset.map(function (d) { // calculate the total number of tickets in the dataset         
-            return (d.enabled) ? d.count : 0; // checking to see if the entry is enabled. if it isn't, we return 0 and cause other percentages to increase                                      
+
+    path.on('mouseover', function (d) {
+        tooltip.style('display', 'block');
+        var total = d3.sum(dataset.map(function (d) {
+            return (d.enabled) ? d.count : 0;
         }));
-        var percent = Math.round(1000 * d.data.count / total) / 10; // calculate percent
-        // popupText.style('display', 'block')
-        // console.log(popupText)
-        // popupText.text = d.data.label
+        var percent = Math.round(1000 * d.data.count / total) / 10;
         svg2.text("Gender: " + d.data.label + " Count: " + d.data.count + " Percentage: " + percent + "%")
         svg2.style('display', 'block');
-        tooltip.select('.label').html(d.data.label); // set current label           
-        tooltip.select('.count').html(d.data.count); // set current count            
-        tooltip.select('.percent').html(percent + '%'); // set percent calculated above          
-        tooltip.style('display', 'block'); // set display                     
+        tooltip.select('.label').html(d.data.label);
+        tooltip.select('.count').html(d.data.count);
+        tooltip.select('.percent').html(percent + '%');
+        tooltip.style('display', 'block');
     });
 
-    path.on('mouseout', function () { // when mouse leaves div                        
-        svg2.style('display', 'none'); // hide tooltip for that element
+    path.on('mouseout', function () {
+        svg2.style('display', 'none');
     });
 
-    path.on('mousemove', function (e, d) { // when mouse moves    
-        svg2.style('top', (d3.event.layerY + 10) + 'px') // always 10px below the cursor
-            .style('left', (d3.event.layerX + 10) + 'px'); // always 10px to the right of the mouse
+    path.on('mousemove', function (e, d) {
+        svg2.style('top', (d3.event.layerY + 10) + 'px')
+            .style('left', (d3.event.layerX + 10) + 'px');
     });
 
     // define legend
     var legend = svg.selectAll('.legend') // selecting elements with class 'legend'
-        .data(color.domain()) // refers to an array of labels from our dataset
-        .enter() // creates placeholder
-        .append('g') // replace placeholders with g elements
-        .attr('class', 'legend') // each g is given a legend class
+        .data(color.domain())
+        .enter()
+        .append('g')
+        .attr('class', 'legend')
         .attr('transform', function (d, i) {
-            var height = legendRectSize + legendSpacing; // height of element is the height of the colored square plus the spacing      
-            var offset = height * 10; // vertical offset of the entire legend = height of a single element & half the total number of elements  
-            var horz = 18 * legendRectSize; // the legend is shifted to the left to make room for the text
-            var vert = i * height - offset; // the top of the element is hifted up or down from the center using the offset defiend earlier and the index of the current element 'i'               
-            return 'translate(' + horz + ',' + vert + ')'; //return translation       
+            var height = legendRectSize + legendSpacing;
+            var offset = height * 10;
+            var horz = 18 * legendRectSize;
+            var vert = i * height - offset;
+            return 'translate(' + horz + ',' + vert + ')';
         });
 
     // adding colored squares to legend
-    legend.append('rect') // append rectangle squares to legend                                   
-        .attr('width', legendRectSize) // width of rect size is defined above                        
-        .attr('height', legendRectSize) // height of rect size is defined above                      
-        .style('fill', color) // each fill is passed a color
-        .style('stroke', color) // each stroke is passed a color
+    legend.append('rect')
+        .attr('width', legendRectSize)
+        .attr('height', legendRectSize)
+        .style('fill', color)
+        .style('stroke', color)
         .on('click', function (label) {
-            var rect = d3.select(this); // this refers to the colored squared just clicked
-            var enabled = true; // set enabled true to default
-            var totalEnabled = d3.sum(dataset.map(function (d) { // can't disable all options
-                return (d.enabled) ? 1 : 0; // return 1 for each enabled entry. and summing it up
+            var rect = d3.select(this);
+            var enabled = true;
+            var totalEnabled = d3.sum(dataset.map(function (d) {
+                return (d.enabled) ? 1 : 0;
             }));
 
-            if (rect.attr('class') === 'disabled') { // if class is disabled
-                rect.attr('class', ''); // remove class disabled
-            } else { // else
-                if (totalEnabled < 2) return; // if less than two labels are flagged, exit
-                rect.attr('class', 'disabled'); // otherwise flag the square disabled
-                enabled = false; // set enabled to false
+            if (rect.attr('class') === 'disabled') {
+                rect.attr('class', '');
+            } else {
+                if (totalEnabled < 2) return;
+                rect.attr('class', 'disabled');
+                enabled = false;
             }
 
             pie.value(function (d) {
-                if (d.label === label) d.enabled = enabled; // if entry label matches legend label
-                return (d.enabled) ? d.count : 0; // update enabled property and return count or 0 based on the entry's status
+                if (d.label === label) d.enabled = enabled;
+                return (d.enabled) ? d.count : 0;
             });
 
-            path = path.data(pie(dataset)); // update pie with new data
+            path = path.data(pie(dataset));
 
-            path.transition() // transition of redrawn pie
-                .duration(750) // 
-                .attrTween('d', function (d) { // 'd' specifies the d attribute that we'll be animating
-                    var interpolate = d3.interpolate(this._current, d); // this = current path element
-                    this._current = interpolate(0); // interpolate between current value and the new value of 'd'
+            path.transition()
+                .duration(750)
+                .attrTween('d', function (d) {
+                    var interpolate = d3.interpolate(this._current, d);
+                    this._current = interpolate(0);
                     return function (t) {
                         return arc(interpolate(t));
                     };
@@ -446,14 +408,40 @@ function displaycategoriesvspurchase(data) {
         }
     });
 }
+var count = 0
+$(document).ready(function () {
 
-//Import our data!
-d3.json("/blackfridaypurchases/groupby?choice=Age").then(function (data) {
-    displayblackfridaybyage(data);
-})
-d3.json("/blackfridaypurchases/groupby?choice=Gender").then(function (data) {
-    displayblackfridaybygender(data);
-})
-d3.json("/blackfridaypurchases/groupby?choice=Product_Category_1").then(function (data) {
-    displaycategoriesvspurchase(data);
-})
+    $(window).scroll(function () {
+
+        var position = $(window).scrollTop();
+        var bottom = $(document).height() - $(window).height();
+        console.log(position)
+        console.log(bottom)
+        if (count == 0) {
+            d3.json("/blackfridaypurchases/groupby?choice=Age").then(function (data) {
+                displayblackfridaybyage(data);
+            })
+            count++
+        }
+
+        if (position >= bottom * .9) {
+
+            if (count == 0) {
+
+            } else if (count == 1) {
+                d3.json("/blackfridaypurchases/groupby?choice=Gender").then(function (data) {
+                    displayblackfridaybygender(data);
+                })
+            } else if (count == 2) {
+                d3.json("/blackfridaypurchases/groupby?choice=Product_Category_1").then(function (data) {
+                    displaycategoriesvspurchase(data);
+                })
+            } else {
+
+            }
+            count++
+        }
+
+    });
+
+});
